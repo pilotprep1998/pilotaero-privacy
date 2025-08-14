@@ -1,83 +1,263 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - PilotAero</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-            color: #333;
-            line-height: 1.6;
-        }
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            background-color: #f7f7f7;
-        }
-        header img {
-            max-width: 120px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-        header h1 {
-            font-size: 2rem;
-            margin: 0;
-            color: #222;
-        }
-        main {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-        h2 {
-            color: #444;
-            margin-top: 30px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>PilotAero — Privacy & Terms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ff7a2a" />
+  <meta name="description" content="PilotAero Privacy Policy and Terms of Use" />
+
+  <!-- App icon / favicon -->
+  <link rel="icon" type="image/png" href="APPAERO.png" />
+
+  <style>
+    :root{
+      --bg1:#ff7a2a;  /* برتقالي من الأيقونة */
+      --bg2:#a14bd9;  /* بنفسجي فاتح */
+      --bg3:#6b46c1;  /* بنفسجي داكن */
+      --text:#ffffff;
+      --muted:#e9e7f6cc;
+      --card:#ffffff14;
+      --stroke:#ffffff33;
+      --pill:#ffffff22;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text); font:16px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(900px 600px at 20% -10%, #ffc07466 0%, #0000 60%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
+      overflow-x:hidden;
+    }
+
+    /* animated clouds (parallax) */
+    .clouds, .clouds::before, .clouds::after{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-repeat:repeat-x; background-size:auto 320px; opacity:.55;
+      background-image:url('clouds.png');
+      mix-blend-mode:screen; /* يعطي حيوية فوق التدرّج */
+    }
+    .clouds{ bottom:-40px; background-position:0 70%; animation: drift 70s linear infinite;}
+    .clouds::before{ content:""; background-position:0 78%; opacity:.45; transform:scale(1.1);
+      animation: drift 110s linear infinite reverse;}
+    .clouds::after{ content:""; background-position:0 86%; opacity:.35; transform:scale(1.22);
+      animation: drift 150s linear infinite;}
+    @keyframes drift { from{background-position-x:0} to{background-position-x:-2400px} }
+
+    .wrap{position:relative; z-index:1; max-width:980px; margin-inline:auto; padding:32px 20px}
+    header{
+      display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px;
+      padding:12px 14px; border:1px solid var(--stroke); border-radius:16px; background:var(--card); backdrop-filter:blur(6px);
+    }
+    .brand{display:flex; gap:14px; align-items:center}
+    .logo{
+      width:48px; height:48px; border-radius:12px; overflow:hidden; box-shadow:0 10px 24px #0000002a
+    }
+    .logo img{width:100%; height:100%; object-fit:cover}
+    h1{margin:0; font-size:26px}
+    .meta{color:var(--muted); font-size:14px}
+    .tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
+    .tag{font-size:12px; padding:4px 10px; border:1px solid var(--stroke); border-radius:999px; background:var(--pill); color:var(--muted)}
+
+    /* tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px}
+    .tab{appearance:none; padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:600;
+         color:var(--text); border:1px solid var(--stroke); background:var(--pill)}
+    .tab[aria-selected="true"]{border-color:transparent; background:#ffffff33}
+    .cards{display:grid; gap:16px}
+    .card{border:1px solid var(--stroke); background:var(--card); border-radius:16px; padding:20px; backdrop-filter:blur(6px)}
+    h2{margin:0 0 8px}
+    h3{margin:18px 0 8px}
+    p,li{color:#ffffffdd}
+    a{color:#fff; text-decoration:underline}
+    footer{margin:28px 0 8px; text-align:center; color:var(--muted); font-size:13px}
+    @media (min-width:820px){ .cards{grid-template-columns:1fr 1fr} }
+  </style>
+
+  <script>
+    // Tabs + language toggle (EN/AR)
+    document.addEventListener('DOMContentLoaded', () => {
+      const panels = [...document.querySelectorAll('[data-panel]')];
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+
+      function show(id){
+        panels.forEach(p=>{
+          const active = (p.dataset.panel === id);
+          p.hidden = !active;
+          // Direction switch for Arabic
+          if(active && /-ar$/.test(id)){ document.documentElement.dir='rtl'; document.documentElement.lang='ar'; }
+          if(active && /-en$/.test(id)){ document.documentElement.dir='ltr'; document.documentElement.lang='en'; }
+        });
+        tabs.forEach(t=>t.setAttribute('aria-selected', t.dataset.target === id));
+        localStorage.setItem('pa_tab', id);
+      }
+      tabs.forEach(t=>t.addEventListener('click', ()=>show(t.dataset.target)));
+
+      show(localStorage.getItem('pa_tab') || 'privacy-en'); // default
+    });
+  </script>
 </head>
 <body>
+  <div class="clouds" aria-hidden="true"></div>
 
+  <div class="wrap">
     <header>
-        <img src="APPAERO.png" alt="PilotAero Logo">
-        <h1>Privacy Policy</h1>
+      <div class="brand">
+        <div class="logo"><img src="APPAERO.png" alt="PilotAero icon"></div>
+        <div>
+          <h1>PilotAero — Legal</h1>
+          <div class="meta">Privacy Policy & Terms · <span>Last updated: <strong>Aug 2025</strong></span></div>
+          <div class="tags">
+            <span class="tag">Support: <a href="mailto:support@pilotaero.org">support@pilotaero.org</a></span>
+            <span class="tag">Website: <a href="https://pilotaero.org" target="_blank" rel="noopener">pilotaero.org</a></span>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <main>
-        <p>Last updated: August 15, 2025</p>
+    <nav class="tabs" role="tablist" aria-label="Legal Tabs">
+      <button class="tab" role="tab" data-target="privacy-en" aria-selected="true">Privacy Policy (EN)</button>
+      <button class="tab" role="tab" data-target="terms-en" aria-selected="false">Terms of Use (EN)</button>
+      <button class="tab" role="tab" data-target="privacy-ar" aria-selected="false">سياسة الخصوصية (AR)</button>
+      <button class="tab" role="tab" data-target="terms-ar" aria-selected="false">شروط الاستخدام (AR)</button>
+    </nav>
 
-        <p>This Privacy Policy describes how PilotAero ("we", "our", or "us") collects, uses, and protects your personal information when you use our mobile application and services.</p>
+    <!-- ================= PRIVACY — EN ================= -->
+    <section class="card" data-panel="privacy-en" role="region" aria-labelledby="privacy-en-title">
+      <h2 id="privacy-en-title">Privacy Policy</h2>
+      <p>PilotAero (“we”, “us”, or “our”) provides study tools for pilots. This privacy notice explains what data we collect, how we use it, and your choices. It applies to our iOS app and related services.</p>
 
-        <h2>1. Information We Collect</h2>
-        <p>We may collect personal information that you voluntarily provide, such as your name, email address, and profile picture when you create an account. We may also collect usage data, including app activity, device type, and app version.</p>
+      <h3>Data We Collect</h3>
+      <ul>
+        <li><strong>Account data</strong> (if you sign in): email address or Apple ID identifier and display name.</li>
+        <li><strong>Profile photo</strong> (optional): only the single photo you select is uploaded; the app cannot browse your library without your selection.</li>
+        <li><strong>Usage & diagnostics</strong>: app actions, device/OS info, and crash data to improve reliability and content.</li>
+        <li><strong>Subscription status</strong>: purchase and renewal information from Apple’s in‑app purchase system (no payment card details stored by us).</li>
+        <li><strong>Support</strong>: messages you send to our support email.</li>
+      </ul>
 
-        <h2>2. How We Use Your Information</h2>
-        <p>We use your information to:
-            <ul>
-                <li>Provide and maintain the app’s services.</li>
-                <li>Improve user experience and app performance.</li>
-                <li>Send important updates, notifications, or announcements.</li>
-            </ul>
-        </p>
+      <h3>Why We Use Your Data</h3>
+      <ul>
+        <li>Provide core features (progress, saved preferences, content access).</li>
+        <li>Authenticate accounts, secure the service, and prevent abuse.</li>
+        <li>Measure performance and improve the app and learning content.</li>
+        <li>Validate active subscriptions and restore purchases.</li>
+        <li>Respond to support requests.</li>
+      </ul>
 
-        <h2>3. Data Security</h2>
-        <p>We implement industry-standard security measures to protect your personal information. However, no transmission over the internet or electronic storage is 100% secure.</p>
+      <h3>Photos Permission</h3>
+      <p>When you add a profile picture, iOS may show “Private Access to Photos”. We only receive the specific photo you choose. The app includes <code>NSPhotoLibraryUsageDescription</code> explaining this purpose.</p>
 
-        <h2>4. Sharing Your Information</h2>
-        <p>We do not sell or share your personal information with third parties, except as required by law or to comply with legal processes.</p>
+      <h3>Retention</h3>
+      <ul>
+        <li>Account data is kept while your account is active.</li>
+        <li>Diagnostics/analytics are retained for a limited period consistent with platform defaults.</li>
+        <li>You can request deletion at any time (see below).</li>
+      </ul>
 
-        <h2>5. Your Rights</h2>
-        <p>You have the right to access, update, or delete your personal data by contacting us at: <strong>support@pilotaero.org</strong></p>
+      <h3>Your Choices</h3>
+      <ul>
+        <li><strong>Access/Update</strong> data in‑app where available.</li>
+        <li><strong>Delete account & data</strong>: email <a href="mailto:support@pilotaero.org">support@pilotaero.org</a> from the same address used in the app.</li>
+        <li><strong>Permissions</strong>: you can revoke Photos access from iOS Settings at any time.</li>
+      </ul>
 
-        <h2>6. Changes to This Policy</h2>
-        <p>We may update this Privacy Policy from time to time. We encourage you to review this page periodically for any changes.</p>
+      <h3>Children</h3>
+      <p>The service is not directed to children under 13. We do not knowingly collect data from children under 13.</p>
 
-        <h2>7. Contact Us</h2>
-        <p>If you have any questions or concerns about this Privacy Policy, please contact us at: <strong>support@pilotaero.org</strong></p>
-    </main>
+      <h3>Security</h3>
+      <p>We use industry‑standard safeguards (encrypted transport, restricted access). No method is 100% secure, and we continually improve protections.</p>
 
+      <h3>Changes & Contact</h3>
+      <p>We may update this notice; changes appear here with an updated date. Contact: <a href="mailto:support@pilotaero.org">support@pilotaero.org</a>.</p>
+    </section>
+
+    <!-- ================= TERMS — EN ================= -->
+    <section class="card" data-panel="terms-en" hidden>
+      <h2>Terms of Use</h2>
+      <p>By downloading or using PilotAero, you agree to these Terms.</p>
+      <h3>License</h3>
+      <p>We grant you a personal, non‑transferable, non‑exclusive license to use the app on devices you own or control.</p>
+      <h3>Subscriptions & Billing</h3>
+      <ul>
+        <li>Subscriptions are billed by Apple and renew automatically unless cancelled at least 24 hours before the end of the period.</li>
+        <li>Manage or cancel in <em>Settings → Apple ID → Subscriptions</em>. Refunds are handled by Apple.</li>
+      </ul>
+      <h3>Acceptable Use</h3>
+      <p>No reverse engineering, scraping, sharing of accounts, or unlawful use.</p>
+      <h3>Disclaimer & Liability</h3>
+      <p>The app is provided “as is” without warranties. To the fullest extent permitted by law, our liability is limited to amounts paid for the current subscription term.</p>
+      <h3>Contact</h3>
+      <p><a href="mailto:support@pilotaero.org">support@pilotaero.org</a></p>
+    </section>
+
+    <!-- ================= PRIVACY — AR ================= -->
+    <section class="card" data-panel="privacy-ar" hidden>
+      <h2>سياسة الخصوصية</h2>
+      <p>توضح هذه السياسة نوع البيانات التي نجمعها وكيف نستخدمها وخياراتك عند استخدام تطبيق <strong>PilotAero</strong> على iOS.</p>
+
+      <h3>البيانات التي نجمعها</h3>
+      <ul>
+        <li><strong>بيانات الحساب</strong> (إن سجّلت الدخول): البريد الإلكتروني أو معرّف Apple والاسم المعروض.</li>
+        <li><strong>صورة الملف الشخصي</strong> (اختياري): نستقبل فقط الصورة التي تختارها؛ لا يمكن للتطبيق تصفّح ألبومك دون اختيارك.</li>
+        <li><strong>الاستخدام والتشخيص</strong>: معلومات الجهاز/النظام والأعطال لتحسين الأداء.</li>
+        <li><strong>الاشتراكات</strong>: حالة الشراء والتجديد من Apple (لا نحتفظ ببيانات البطاقات).</li>
+        <li><strong>الدعم</strong>: رسائلك إلى بريدنا.</li>
+      </ul>
+
+      <h3>أغراض الاستخدام</h3>
+      <ul>
+        <li>تشغيل الميزات الأساسية وحفظ الإعدادات.</li>
+        <li>تأمين الحسابات ومنع إساءة الاستخدام.</li>
+        <li>تحسين جودة التطبيق والمحتوى.</li>
+        <li>التحقق من الاشتراكات واستعادتها.</li>
+        <li>الرد على طلبات الدعم.</li>
+      </ul>
+
+      <h3>إذن الصور</h3>
+      <p>عند إضافة صورة، قد يعرض iOS نافذة “وصول خاص للصور”. نتلقى فقط الصورة التي اخترتها. يتضمن التطبيق وصف الإذن <code>NSPhotoLibraryUsageDescription</code>.</p>
+
+      <h3>الاحتفاظ بالبيانات</h3>
+      <ul>
+        <li>تُحفظ بيانات الحساب طوال فترة نشاط الحساب.</li>
+        <li>تُحفظ بيانات التشخيص لفترة محدودة وفق إعدادات المنصّة.</li>
+        <li>يمكنك طلب الحذف في أي وقت.</li>
+      </ul>
+
+      <h3>حقوقك</h3>
+      <ul>
+        <li>عرض/تحديث بياناتك داخل التطبيق متى توفر ذلك.</li>
+        <li>طلب حذف الحساب والبيانات عبر البريد: <a href="mailto:support@pilotaero.org">support@pilotaero.org</a>.</li>
+        <li>إلغاء إذن الصور من إعدادات iOS.</li>
+      </ul>
+
+      <h3>الأطفال</h3>
+      <p>الخدمة غير موجهة لمن هم دون 13 عامًا.</p>
+
+      <h3>الأمان</h3>
+      <p>نستخدم وسائل حماية قياسية (تشفير أثناء النقل وتقييد الوصول). لا توجد وسيلة آمنة 100% ونعمل على تحسينها باستمرار.</p>
+
+      <h3>التعديلات والتواصل</h3>
+      <p>قد نحدّث هذه السياسة ويظهر التعديل هنا. للتواصل: <a href="mailto:support@pilotaero.org">support@pilotaero.org</a>.</p>
+    </section>
+
+    <!-- ================= TERMS — AR ================= -->
+    <section class="card" data-panel="terms-ar" hidden>
+      <h2>شروط الاستخدام</h2>
+      <ul>
+        <li>ترخيص شخصي وغير قابل للتحويل لاستخدام التطبيق على أجهزتك.</li>
+        <li>تجدد الاشتراكات تلقائيًا عبر Apple ما لم تُلغِها قبل 24 ساعة من نهاية الفترة.</li>
+        <li>إدارة/إلغاء الاشتراك من إعدادات Apple ID. طلبات الاسترداد عبر Apple.</li>
+        <li>يُمنع تفكيك الكود أو مشاركة الحساب أو أي استخدام مخالف للقانون.</li>
+        <li>يوفر التطبيق “كما هو” دون ضمانات، ومسؤوليتنا محدودة بحدود رسوم الاشتراك للفترة الجارية حيث يسمح القانون.</li>
+      </ul>
+      <p>التواصل: <a href="mailto:support@pilotaero.org">support@pilotaero.org</a></p>
+    </section>
+
+    <footer>© <span id="y"></span> PilotAero. All rights reserved.</footer>
+  </div>
+
+  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
